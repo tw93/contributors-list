@@ -26,6 +26,7 @@ export declare function calcSectionHeight(total: number, options: ReturnType<typ
 export declare function getUsers(octokit: ReturnType<typeof github.getOctokit>, owner: string, repo: string, options: ReturnType<typeof getInputs>): Promise<{
     bots: {
         name: string;
+        login: string;
         avatar: string;
         url: string | undefined;
         type: string;
@@ -36,6 +37,7 @@ export declare function getUsers(octokit: ReturnType<typeof github.getOctokit>, 
     }[];
     contributors: {
         name: string;
+        login: string;
         avatar: string;
         url: string | undefined;
         type: string;

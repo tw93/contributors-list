@@ -218,6 +218,7 @@ export async function getUsers(
     .map(async (user, i) => ({
       ...getItemBBox(i, options),
       name: getUserName(user.login!, options),
+      login: user.login!,
       avatar: await fetchAvatar(user.avatar_url!, options),
       url: user.html_url,
       type: user.type === 'Bot' ? 'bot' : 'contributor',
@@ -228,6 +229,7 @@ export async function getUsers(
     .map(async (user, i) => ({
       ...getItemBBox(i, options),
       name: getUserName(user.login!, options),
+      login: user.login!,
       avatar: await fetchAvatar(user.avatar_url!, options),
       url: user.html_url,
       type: 'bot',
