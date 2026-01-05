@@ -79,14 +79,16 @@ async function fetchAvatar(url: string, options: ReturnType<typeof getInputs>) {
   const avatarUrl = `${url}${url.includes('?') ? '&' : '?'}s=${
     options.avatarSize
   }`
-  return fetch(avatarUrl).then(async (res) => {
+  try {
+    const res = await fetch(avatarUrl)
     const type = res.headers.get('content-type')
-    const prefix = `data:${type};base64,`
-
-    return res.buffer().then((buffer) => {
-      return prefix + buffer.toString('base64')
-    })
-  })
+    const arrayBuffer = await res.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    return `data:${type};base64,${buffer.toString('base64')}`
+  } catch (e) {
+    core.warning(`Failed to fetch avatar: ${avatarUrl}, error: ${e.message}`)
+    return url
+  }
 }
 
 function getItemBBox(index: number, options: ReturnType<typeof getInputs>) {
