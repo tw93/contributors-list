@@ -19,6 +19,7 @@ export declare function getInputs(): {
     avatarSize: number;
     avatarMargin: number;
     userNameHeight: number;
+    noFetch: boolean;
 };
 export declare function getLargeFile(octokit: ReturnType<typeof getOctokit>, path: string): Promise<import("@octokit/types").OctokitResponse<any, number> | null>;
 export declare function calcSectionHeight(total: number, options: ReturnType<typeof getInputs>): number;

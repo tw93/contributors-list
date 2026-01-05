@@ -103,6 +103,11 @@ inputs:
     required: false
     default: false
 
+  noFetch:
+    description: Should not fetch avatars and convert to base64.
+    required: false
+    default: false
+
 runs:
   using: node20
   main: dist/index.js

@@ -33,6 +33,7 @@ export function getInputs() {
     avatarSize: Number.isNaN(avatarSize) ? 64 : avatarSize,
     avatarMargin: Number.isNaN(avatarMargin) ? 5 : avatarMargin,
     userNameHeight: Number.isNaN(userNameHeight) ? 0 : userNameHeight,
+    noFetch: core.getInput('noFetch') === 'true',
   }
 }
 
@@ -66,14 +67,17 @@ export function calcSectionHeight(
   const { avatarMargin } = options
   const avatarWidth = options.avatarSize
   const avatarHeight = options.avatarSize
-  const itemWidth = avatarWidth + 2 * avatarMargin
-  const itemHeight = avatarHeight + 2 * avatarMargin + options.userNameHeight
-  const colCount = Math.floor(svgWidth / itemWidth)
+  const itemWidth = avatarWidth + avatarMargin
+  const itemHeight = avatarHeight + avatarMargin + options.userNameHeight
+  const colCount = Math.floor((svgWidth - avatarMargin) / itemWidth) || 1
 
   return itemHeight * Math.ceil(total / colCount)
 }
 
 async function fetchAvatar(url: string, options: ReturnType<typeof getInputs>) {
+  if (options.noFetch) {
+    return url
+  }
   return fetch(url).then(async (res) => {
     const type = res.headers.get('content-type')
     const prefix = `data:${type};base64,`
@@ -116,7 +120,8 @@ function getItemBBox(index: number, options: ReturnType<typeof getInputs>) {
   const { avatarMargin } = options
   const avatarWidth = options.avatarSize
   const avatarHeight = options.avatarSize
-  const colCount = Math.floor(svgWidth / (avatarWidth + 2 * avatarMargin))
+  const itemWidth = avatarWidth + avatarMargin
+  const colCount = Math.floor((svgWidth - avatarMargin) / itemWidth) || 1
   const colIndex = index % colCount
   const rowIndex = Math.floor(index / colCount)
 
