@@ -56,13 +56,7 @@ export async function run() {
         : null
     }
 
-    if (preContent) {
-      const reg = /<!--(.|[\r\n])*?-->/g
-      const matches = preContent.match(reg)
-      if (matches && matches.some((match) => match === annotation)) {
-        return core.info('No updated required, content not changed.')
-      }
-    }
+    // Force update to ensure new rendering logic is applied
 
     mustache.parse(options.itemTemplate)
 
