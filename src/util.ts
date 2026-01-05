@@ -1,8 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import sharp from 'sharp'
 import fetch from 'node-fetch'
-import { imageSize } from 'image-size'
 
 export function getOctokit() {
   const token = core.getInput('GITHUB_TOKEN', { required: true })
@@ -78,38 +76,14 @@ async function fetchAvatar(url: string, options: ReturnType<typeof getInputs>) {
   if (options.noFetch) {
     return url
   }
-  return fetch(url).then(async (res) => {
+  const avatarUrl = `${url}${url.includes('?') ? '&' : '?'}s=${
+    options.avatarSize
+  }`
+  return fetch(avatarUrl).then(async (res) => {
     const type = res.headers.get('content-type')
     const prefix = `data:${type};base64,`
 
-    // eslint-disable-next-line promise/no-nesting
     return res.buffer().then((buffer) => {
-      if (options.round) {
-        const box = imageSize(buffer)
-        const size = Math.min(
-          box.width || options.avatarSize,
-          box.height || options.avatarSize,
-        )
-        const r = size / 2
-        const overlay = Buffer.from(
-          `<svg><circle cx="${r}" cy="${r}" r="${r}" /></svg>`,
-        )
-
-        return (
-          sharp(buffer)
-            .composite([
-              {
-                input: overlay,
-                blend: 'dest-in',
-              },
-            ])
-            .png()
-            .toBuffer()
-            // eslint-disable-next-line promise/no-nesting
-            .then((b) => `data:image/png;base64,${b.toString('base64')}`)
-        )
-      }
-
       return prefix + buffer.toString('base64')
     })
   })
